@@ -16,7 +16,9 @@ public class TestGaulois {
         // minus.recevoirCoup(3);
 
         asterix.frapper(minus);
+        minus.frapper(asterix);
         asterix.frapper(minus);
-        asterix.frapper(minus);
+        minus.frapper(asterix);
+        asterix.frapper(minus);	
     }
 }
