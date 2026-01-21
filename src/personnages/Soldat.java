@@ -6,5 +6,7 @@ public class Soldat extends Romain{
         super(nom, force);
         this.grade = grade ;
     }
-
+    public Grades getGrade() {
+        return grade;
+    }
 }
