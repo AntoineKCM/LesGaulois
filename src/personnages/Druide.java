@@ -23,8 +23,12 @@ public class Druide extends Gaulois{
 		
 	}
 	public void booster(Gaulois gaulois) {
-			if (Gaulois gaulois=obelix) {
+			if (gaulois.getNom()= obelix) {
 				parler("pas de popo pour toi mon gourmand");
+			}
+			else {
+				gaulois.boost = forcePotion ;
+				
 			}
 	}
 }
