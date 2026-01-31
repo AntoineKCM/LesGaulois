@@ -42,5 +42,11 @@ public class Village {
         nouveauChef.parler("Merci !");
         chef = nouveauChef;
     }
+    public Gaulois[] getVillageois() {
+        return villageois;
+    }
 
+    public int getNbVillageois() {
+        return nbVillageois;
+    }
 }

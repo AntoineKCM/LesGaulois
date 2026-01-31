@@ -10,8 +10,9 @@ public class Soldat extends Romain {
         super(nom, force);
         this.grade = grade;
     }
-
-    // Méthode unique pour s'équiper
+    public Grades getGrade() {
+        return grade;
+    }
     public void equiper(Equipement e) {
         if (e == Equipement.CASQUE && casque == null) {
             casque = e;

@@ -16,7 +16,13 @@ public class Camp {
 
         commandant.parler("Je suis en charge de créer un nouveau camp romain.");
     }
+    public Soldat[] getSoldats() {
+        return soldats;
+    }
 
+    public int getNbSoldats() {
+        return nbSoldats;
+    }
     public Soldat getCommandant() {
         return commandant;
     }
@@ -50,7 +56,6 @@ public class Camp {
             commandant = nouveauCommandant;
         }
     }
-
 }
     	
 	
