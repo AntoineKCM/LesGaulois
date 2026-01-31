@@ -3,7 +3,7 @@ package personnages;
 public abstract class Personnage {
 
     private String nom;
-    private int force;
+    protected int force; 
 
     public Personnage(String nom, int force) {
         this.nom = nom;
@@ -20,19 +20,22 @@ public abstract class Personnage {
 
     protected abstract String donnerAuteur();
 
-	public void frapper(Personnage adversaire) {
-	    System.out.println(donnerAuteur() + " envoie un grand coup dans la mâchoire de " + adversaire.getNom());
-	    adversaire.recevoirCoup(force / 3);
-	}
+    public void frapper(Personnage adversaire) {
+        System.out.println(donnerAuteur() + " envoie un grand coup dans la mâchoire de " + adversaire.getNom());
+        adversaire.recevoirCoup(force);
+    }
 
     public void recevoirCoup(int forceCoup) {
-		if(forceCoup>=force) {
-			force =0 ; 
-			System.out.println(donnerAuteur() + " : « "+"« J’abandonne…"+ " ».");
-		}
-		else {
-			force =force - forceCoup ;
-			System.out.println(donnerAuteur()  + " : « "+"Aïe ! "+ " ».") ;
-		}
+        if (forceCoup >= force) {
+            force = 0;
+            System.out.println(donnerAuteur() + " : « J’abandonne… »");
+        } else {
+            force -= forceCoup;
+            System.out.println(donnerAuteur() + " : « Aïe ! »");
+        }
+    }
+
+    public boolean estVivant() {
+        return force > 0;
     }
 }
