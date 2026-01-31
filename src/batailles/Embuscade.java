@@ -1,5 +1,6 @@
 package batailles;
 
+import personnages.Equipement;
 import personnages.Gaulois;
 import personnages.Soldat;
 import personnages.Grades;
@@ -32,23 +33,75 @@ public class Embuscade implements IBataille {
 
     @Override
     public String preparerCombat() {
-        Soldat[] embusques = selectionnerSoldats();
+        Soldat[] soldats = selectionnerSoldats();
+        String texte = "Les soldats s'étaient bien préparés :\n";
+
+        for (int i = 0; i < soldats.length; i++) {
+            Soldat s = soldats[i];
+            s.equiper(Equipement.CASQUE);
+            texte += "- Le soldat " + s.getNom() + " s'équipe avec un casque.\n";
+
+            s.equiper(Equipement.PLASTRON);
+            texte += "- Le soldat " + s.getNom() + " s'équipe avec un plastron.\n";
+
+            s.equiper(Equipement.BOUCLIER);
+            texte += "- Le soldat " + s.getNom() + " s'équipe avec un bouclier.\n";
+        }
+        return texte;
+    }
+
+    private Soldat choisirSoldatVivant(Soldat[] soldats) {
+        int i = (int)(Math.random() * soldats.length);
+        while (!soldats[i].estVivant()) {
+            i = (int)(Math.random() * soldats.length);
+        }
+        return soldats[i];
+    }
+
+    private Gaulois choisirGauloisVivant(Gaulois[] gaulois) {
+        int i = (int)(Math.random() * gaulois.length);
+        while (!gaulois[i].estVivant()) {
+            i = (int)(Math.random() * gaulois.length);
+        }
+        return gaulois[i];
+    }
+
+    @Override
+    public String decrireCombat() {
+        Gaulois[] gaulois = selectionnerPromeneurs();
+        Soldat[] soldats = selectionnerSoldats();
+
         String texte = "";
 
-        for (int i = 0; i < embusques.length; i++) {
-            texte += "Le soldat " + embusques[i].getNom() + " s'équipe de ses protections.\n";
+        while (!equipeKO(gaulois) && !equipeKO(soldats)) {
+            Gaulois g = choisirGauloisVivant(gaulois);
+            Soldat s = choisirSoldatVivant(soldats);
+
+            if (Math.random() < 0.5) {
+                texte += "Le gaulois " + g.getNom() +
+                         " donne un grand coup au soldat " + s.getNom() + ".\n";
+                g.frapper(s);
+                texte += "Le soldat " + s.getNom() + " : « Aïe ».\n";
+            } else {
+                texte += "Le soldat " + s.getNom() +
+                        " donne un grand coup au gaulois " + g.getNom() + ".\n";
+                s.frapper(g);
+                texte += "Le gaulois " + g.getNom() + " : « Aïe ».\n";
+            }
         }
         return texte;
     }
 
     @Override
-    public String decrireCombat() {
-        return "Les gaulois sont surpris par l'embuscade et n'ont pas bu de potion magique.";
-    }
-
-    @Override
     public String donnerResultat() {
-        return "Les soldats prennent l'avantage grâce à l'effet de surprise.";
+        Gaulois[] gaulois = selectionnerPromeneurs();
+        if (!equipeKO(gaulois)) {
+            return "Malgré cette sournoise attaque, nos promeneurs s'en sont sortis indemnes.\n" +
+                   "Ils pouvaient compter sur la force de " + formatterGaulois(gaulois);
+        } else {
+            return "L'attaque fut tellement rapide et inattendue que nos malheureux gaulois n'ont pas eu le temps de réagir.\n" +
+                   "Ils furent ligotés et emmenés dans le camp de " + camp.getCommandant().getNom() + ".";
+        }
     }
 
 
@@ -79,17 +132,31 @@ public class Embuscade implements IBataille {
         return resultat;
     }
 
+    private boolean equipeKO(Gaulois[] gaulois) {
+        for (int i = 0; i < gaulois.length; i++) {
+            if (gaulois[i].estVivant()) return false;
+        }
+        return true;
+    }
+
+    private boolean equipeKO(Soldat[] soldats) {
+        for (int i = 0; i < soldats.length; i++) {
+            if (soldats[i].estVivant()) return false;
+        }
+        return true;
+    }
+
     private String formatterGaulois(Gaulois[] gaulois) {
         String texte = "";
         int nb = 0;
 
         for (int i = 0; i < gaulois.length; i++) {
-            if (gaulois[i] != null) nb++;
+            if (gaulois[i] != null && gaulois[i].estVivant()) nb++;
         }
 
         int compteur = 0;
         for (int i = 0; i < gaulois.length; i++) {
-            if (gaulois[i] != null) {
+            if (gaulois[i] != null && gaulois[i].estVivant()) {
                 if (!texte.isEmpty()) {
                     texte += (compteur == nb - 1 ? " et " : ", ");
                 }
@@ -102,13 +169,20 @@ public class Embuscade implements IBataille {
 
     private String formatterSoldats(Soldat[] soldats) {
         String texte = "";
+        int nb = 0;
 
+        for (int i = 0; i < soldats.length; i++) {
+            if (soldats[i] != null) nb++;
+        }
+
+        int compteur = 0;
         for (int i = 0; i < soldats.length; i++) {
             if (soldats[i] != null) {
                 if (!texte.isEmpty()) {
-                    texte += " et ";
+                    texte += (compteur == nb - 1 ? " et " : ", ");
                 }
                 texte += soldats[i].getNom();
+                compteur++;
             }
         }
         return texte + ".";
